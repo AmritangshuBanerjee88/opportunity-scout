@@ -205,3 +205,27 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Secrets
+frontend/.streamlit/secrets.toml
+*.env
+credentials.env
+# Secrets and credentials
+*.env
+credentials.env
+secrets.toml
+.streamlit/secrets.toml
+
+# Test files with potential secrets
+test_endpoint.py
+test_*.py
+!test_endpoint_template.py
+
+# Deployment scripts with secrets
+deploy_only.py
+redeploy_*.py
+update_timeout.py
+
+# API keys should never be committed
+**/api_key*
+**/apikey*

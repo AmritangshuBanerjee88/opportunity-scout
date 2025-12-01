@@ -1,0 +1,38 @@
+# Configuration for Opportunity Scout Backend
+# Model-agnostic design - easily swap models by changing deployment names
+
+# Azure AI Foundry (OpenAI) Settings
+azure_openai:
+  api_version: "2024-06-01"
+
+# Serper.dev Search Settings (replaced Bing)
+serper_search:
+  endpoint: "https://google.serper.dev/search"
+  results_per_query: 10
+
+# Model Configuration - EASILY SWAPPABLE
+models:
+  chat:
+    # Updated to GPT-4.1 (more powerful)
+    deployment_name: "gpt-4.1"
+
+# Search Configuration
+search:
+  max_results: 20
+  default_opportunity_types:
+    - conference
+    - seminar
+    - webinar
+    - podcast
+    - panel
+    - workshop
+  search_query_templates:
+    - "{keyword} conference call for speakers 2025"
+    - "{keyword} summit speaker application"
+    - "{keyword} webinar guest speaker opportunity"
+    - "{keyword} podcast guest interview"
+    - "{keyword} panel discussion speakers wanted"
+
+# Logging
+logging:
+  level: "INFO"
