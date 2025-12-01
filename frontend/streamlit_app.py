@@ -3,6 +3,8 @@ Opportunity Scout - Streamlit Frontend
 
 A web application for finding speaking opportunities for freelancers,
 influencers, and keynote speakers.
+
+Password protected for authorized access only.
 """
 
 import streamlit as st
@@ -23,6 +25,74 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# =============================================================================
+# PASSWORD PROTECTION
+# =============================================================================
+
+def check_password():
+    """Returns `True` if the user has entered the correct password."""
+    
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if st.session_state["password"] == st.secrets.get("APP_PASSWORD", ""):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store password
+        else:
+            st.session_state["password_correct"] = False
+
+    # First run, show input for password
+    if "password_correct" not in st.session_state:
+        st.markdown("""
+        <div style="text-align: center; padding: 50px;">
+            <h1>🔍 Opportunity Scout</h1>
+            <p style="color: #666;">AI-Powered Speaking Opportunity Finder</p>
+            <br>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.text_input(
+                "🔐 Enter Access Code", 
+                type="password", 
+                on_change=password_entered, 
+                key="password",
+                placeholder="Enter your access code..."
+            )
+            st.markdown("""
+            <p style="text-align: center; color: #888; font-size: 0.9rem;">
+                Don't have an access code? Contact the administrator.
+            </p>
+            """, unsafe_allow_html=True)
+        return False
+    
+    # Password was entered incorrectly
+    elif not st.session_state["password_correct"]:
+        st.markdown("""
+        <div style="text-align: center; padding: 50px;">
+            <h1>🔍 Opportunity Scout</h1>
+            <p style="color: #666;">AI-Powered Speaking Opportunity Finder</p>
+            <br>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.text_input(
+                "🔐 Enter Access Code", 
+                type="password", 
+                on_change=password_entered, 
+                key="password",
+                placeholder="Enter your access code..."
+            )
+            st.error("❌ Incorrect access code. Please try again.")
+        return False
+    
+    # Password is correct
+    else:
+        return True
+
 
 # =============================================================================
 # CUSTOM STYLING
@@ -229,6 +299,10 @@ def convert_to_json(opportunities: List[Dict], metadata: Dict) -> str:
 # =============================================================================
 
 def main():
+    # Check password first
+    if not check_password():
+        return
+    
     # Header
     st.markdown('<p class="main-header">🔍 Opportunity Scout</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-header">AI-Powered Speaking Opportunity Finder</p>', unsafe_allow_html=True)
@@ -237,27 +311,10 @@ def main():
     with st.sidebar:
         st.header("⚙️ Configuration")
         
-        # API Configuration
-        with st.expander("🔐 API Settings", expanded=False):
-            st.info("Configure your Azure ML endpoint credentials")
-            
-            manual_endpoint = st.text_input(
-                "Endpoint URL",
-                value=st.session_state.get("manual_endpoint", ""),
-                type="default",
-                help="Your Azure ML endpoint URL"
-            )
-            
-            manual_key = st.text_input(
-                "API Key",
-                value=st.session_state.get("manual_key", ""),
-                type="password",
-                help="Your Azure ML API key"
-            )
-            
-            if manual_endpoint and manual_key:
-                st.session_state["manual_endpoint"] = manual_endpoint
-                st.session_state["manual_key"] = manual_key
+        # Logout button
+        if st.button("🚪 Logout"):
+            st.session_state["password_correct"] = False
+            st.rerun()
         
         st.divider()
         
@@ -356,14 +413,11 @@ def main():
     # Process search
     if search_clicked and keywords and selected_types:
         # Get API client
-        endpoint = st.session_state.get("manual_endpoint") or st.secrets.get("AZURE_ML_ENDPOINT_A", "")
-        api_key = st.session_state.get("manual_key") or st.secrets.get("AZURE_ML_KEY_A", "")
+        client = get_api_client()
         
-        if not endpoint or not api_key:
-            st.error("❌ Please configure your API credentials in the sidebar.")
+        if not client:
+            st.error("❌ API credentials not configured. Please contact administrator.")
             return
-        
-        client = OpportunityScoutClient(endpoint, api_key)
         
         # Create search request
         request = SearchRequest(
