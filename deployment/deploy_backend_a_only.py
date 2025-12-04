@@ -1,5 +1,5 @@
 """
-Deploy only the deployment to existing Backend B endpoint.
+Deploy only the deployment to existing Backend A endpoint.
 """
 
 import os
@@ -22,7 +22,7 @@ except ImportError:
 SUBSCRIPTION_ID = "1a522cdf-c3bd-41da-bc8e-21aa5eb69527"
 RESOURCE_GROUP = "opportunityscout"
 WORKSPACE_NAME = "amlstudioadditional"
-ENDPOINT_NAME = "proposal-architect-endpoint"
+ENDPOINT_NAME = "opportunity-scout-endpoint"
 
 
 def main():
@@ -48,15 +48,15 @@ def main():
     print("✅ Connected!")
     
     script_dir = Path(__file__).parent.absolute()
-    backend_dir = script_dir.parent / "backend_b"
-    environment_file = script_dir / "environment_b.yml"
+    backend_dir = script_dir.parent / "backend"
+    environment_file = script_dir / "environment.yml"
     
     print(f"\nBackend directory: {backend_dir}")
     
     print("\nCreating environment...")
     env = Environment(
-        name="proposal-architect-env-v2",
-        description="Environment for Proposal Architect",
+        name="opportunity-scout-env-v2",
+        description="Environment for Opportunity Scout",
         conda_file=str(environment_file),
         image="mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04:latest"
     )

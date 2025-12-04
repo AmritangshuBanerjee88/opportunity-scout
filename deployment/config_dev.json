@@ -1,0 +1,9 @@
+{
+  "subscription_id": "1a522cdf-c3bd-41da-bc8e-21aa5eb69527",
+  "resource_group": "opportunityscout",
+  "workspace_name": "opportunityscoutrineet",
+  "endpoint_a_name": "opportunity-scout-endpoint1",
+  "endpoint_b_name": "proposal-architect-endpoint1",
+  "azure_openai_endpoint": "https://openai-genesis-poc-swedencentral.openai.azure.com/",
+  "azure_search_endpoint": "https://vectordbrineet.search.windows.net"
+}

@@ -3,7 +3,7 @@
 
 # Azure AI Foundry (OpenAI) Settings
 azure_openai:
-  api_version: "2024-06-01"
+  api_version: "2024-12-01-preview"
 
 # Azure AI Search Settings
 azure_search:
@@ -13,7 +13,7 @@ azure_search:
 models:
   chat:
     # Change this to switch models (e.g., "gpt-4o-deployment", "gpt-5-deployment")
-    deployment_name: "gpt-4.1"
+    deployment_name: "gpt-5"
   
   embedding:
     # Embedding model for vector search
